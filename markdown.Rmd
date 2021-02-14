@@ -2,9 +2,22 @@
 title: "Toronto Neighbourhood Crime Rates - Analysis"
 subtitle: "Using Simple Linear Regression Model"
 author: "Md Abrar Nasir"
-date: "14/02/2021"
+date: "February 14, 2020"
 output: pdf_document
 ---
 
+
 ## Introduction
 
+Criminal activities or crime rates have always been a serious point of concern for citizens and authorities in a city. In this analysis, we are to investigate the relationship between the population of a city, which, in our case, is Toronto and its crime rates, based of 2016 data, over varying types of crime categories in question, such as assault, auto theft, robbery etc.
+
+The data for this exploration has been sourced from the [Open Data Toronto Portal](https://open.toronto.ca/dataset/neighbourhood-crime-rates/), published by the Toronto Police Services.
+
+
+## Model
+
+The mathematical model which is to be used is simple linear regression (SLR) which will exhibit the relationship between our response variables, *crime rates* and the predictor, *population in Toronto in 2016* by means of the linear equation:
+$$Y_i = \alpha + \beta x_i + U_i$$
+where $Y_i$ is our response variable, $x_i$ is our predictor, and $\alpha$ and $\beta$ are the $y-$intercept and the slope of the line respectively.
+
+It should also be mentioned that $U_i$ represents any random fluctuation in the relationship, which, for the benefit of simplification, will be assumed to be independent and have an expectation of zero. Also, it should be considered that the variance is same for each $U_i$.
