@@ -34,11 +34,13 @@ The data for this exploration has been sourced from the [Open Data Toronto Porta
 
 The mathematical model which is to be used is simple linear regression (SLR) which will exhibit the relationship between our response variables, *number of assaults*, *number of auto thefts*, *number of break-and-enters*, *number of homicides*, *number of robberies* and *number of thefts* and the predictor, *population in Toronto in 2016* by means of the linear equation:
 $$Y_i = \alpha + \beta x_i + U_i$$
-where $Y_i$ is our response variable, $x_i$ is our predictor, and $\alpha$ and $\beta$ are the $y-$intercept and the slope of the line respectively.
+where $Y_i$ is our response variable, $x_i$ is our predictor, and $\alpha$ is the $y-$intercept and $\beta$ is the slope of the line.
 
 It should also be mentioned that $U_i$ represents any random fluctuation in the relationship, which, for the benefit of simplification, will be assumed to be independent and have an expectation of zero. Also, it should be considered that the variance is same for each $U_i$. The values of $x_i$ are to be taken as non-random while the values of $y_i$ should be realizations of random variable, $Y_i$ such that $(x_i, y_i)$ is the placeholder for our bivariate dataset containing the regressors and the regressands resprectively.
 
 In layman's terms, this can be explained as drawing a straight line of best fit to express the relationship between our $x_i$ and $y_i$ and then computing the values of the slope and the intercept, to predict crime rates of a certain category using the population number.
+
+To better judge the appropriateness of the model to suit our data, we can examine the scatterplots below which depicts the population sizes and their corresponding crime rates for the set of six types of criminal activites -
 
 ```{r, echo = FALSE, message = FALSE}
 
@@ -54,3 +56,48 @@ p6 <- ggplot(df, aes(Population, TheftOver_2016)) + geom_point(size = 0.75, col 
 
 ```
 
+As we can see observe in the illustrations, for all, except the `number of homicide ~ population` plot, there is an upward flow of dots, representing a positive trend or relationship. This can be attested by any human rationale suggesting there should be an increase in crime rates (of any type almost) as population increases. Hence, it can be concluded that our SLR model is well-suited with our dataset holding the discrete values.
+
+
+## Results
+
+The $\alpha$ and $\beta$ values for our investigations can be calculated using computer software, which are tabulated below. The `number of homicide ~ population` entry should been dropped from our analysis, as its scatterplot hardly represents a pattern and its corresponding regression line would be unreasonably framed.
+
+```{r, include = FALSE}
+
+coef(lm(Assault_2016 ~ Population, data = df))
+coef(lm(AutoTheft_2016 ~ Population, data = df))
+coef(lm(BreakandEnter_2016 ~ Population, data = df))
+coef(lm(Robbery_2016 ~ Population, data = df))
+coef(lm(TheftOver_2016 ~ Population, data = df))
+
+```
+
+| Categories | Assault | Auto Theft | Break-and-Enter | Robbery | Theft |
+|:-----------------------|:-------:|:----------:|:---------------:|:-------:|:-----:|
+| $\alpha$ | -29.878 | -1.064 | 4.827 | 1.062 | -3.210 |
+| $\beta$ | 0.00831 | 0.00125 | 0.00209 | 0.00126 | 0.00054 |
+
+The $\alpha$ value, for each category of crime, shows what the crime rate is supposed to be when the population is zero, as per our model. The $\beta$ values, on the other hand, show by what proportion would there be a rise in crime rate for each category of crime following a change in population.
+
+In an ideal situation, crime rate should be zero when population is fixed at the zero level. This condition, however, does not align with the information relayed in the table, making the results lose a bit of meaning.
+
+```{r, echo = FALSE, message = FALSE}
+
+r1 <- ggplot(df, aes(Population, Assault_2016)) + geom_point(size = 0.75) + stat_smooth(method = lm, col = "#390099", fill = "#390099") + ggtitle("Relationship between Population \n and Number of Assaults") + theme(plot.title = element_text(size = 7, face = "bold", hjust = 0.5), axis.title = element_text(size = 6.75)) +labs(x = "Population in 2016", y = "Number of Assaults in 2016")
+r2 <- ggplot(df, aes(Population, AutoTheft_2016)) + geom_point(size = 0.75) + stat_smooth(method = lm, col = "#9E0059", fill = "#9E0059") + ggtitle("Relationship between Population \n and Number of Auto Thefts") + theme(plot.title = element_text(size = 7, face = "bold", hjust = 0.5), axis.title = element_text(size = 6.75)) + xlab("Population in 2016") + ylab("Number of Auto Thefts in 2016")
+r3 <- ggplot(df, aes(Population, BreakandEnter_2016)) + geom_point(size = 0.75) + stat_smooth(method = lm, col = "#FF0054", fill = "#FF0054") + ggtitle("Relationship between Population \n and Number of Break-and-Enters") + theme(plot.title = element_text(size = 7, face = "bold", hjust = 0.5), axis.title = element_text(size = 6.75)) + xlab("Population in 2016") + ylab("Number of Break-and-Enters in 2016") 
+r4 <- ggplot(df, aes(Population, Robbery_2016)) + geom_point(size = 0.75) + stat_smooth(method = lm, col = "#FFBD00", fill = "#FFBD00") + ggtitle("Relationship between Population \n and Number of Robberies") + theme(plot.title = element_text(size = 7, face = "bold", hjust = 0.5), axis.title = element_text(size = 6.75)) + xlab("Population in 2016") + ylab("Number of Robberies in 2016") 
+r5 <- ggplot(df, aes(Population, TheftOver_2016)) + geom_point(size = 0.75) + stat_smooth(method = lm, col = "#06D6A0", fill = "#06D6A0") + ggtitle("Relationship between Population \n and Number of Thefts") + theme(plot.title = element_text(size = 7, face = "bold", hjust = 0.5), axis.title = element_text(size = 6.75)) + xlab("Population in 2016") + ylab("Number of Thefts in 2016")
+
+(r1 | r2 | r3) /
+  (r4 + r5 + plot_spacer())
+
+```
+
+Now that we have the regression lines formulated after the $\alpha$ and $\beta$ values for the categories of crime in Toronto laid over the scatterplots, it can be easily understood what the relationships are by means of this visualization. The solid line is the line with the model equation $Y_i = \alpha + \beta x_i$ and the shadowed regions represent the confidence intervals for the predicted values.
+
+
+## Conclusion
+
+Finally, in this analysis, we can conclude that there is a positive relationship between neighbourhood crime rates in Toronto and the population in the different neighbourhoods, as suggested by the upward sloping regression lines. It has also been figured out that, while this SLR model is somewhat fitting for the data, there are still some unreasonable attributes to them, such as the case where $\alpha$ values are non-zero.
